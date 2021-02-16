@@ -32,7 +32,13 @@
         }
 
         li {
+            margin-right: 1.5rem;
+            display: inline-block;
             list-style-type: none;   
+
+            &:last-child {
+                margin-right: 0;
+            }
             
             a {
                 font-size: 1.8rem;

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import './styles.scss';
 import Button from './../forms/Button';
 import { signInWithGoogle, auth } from './../../firebase/utils';
 
+import AuthWrapper from './../AuthWrapper';
 import FormInput from './../forms/FormInput'
 // import Button from './../forms/Button'
 
@@ -37,51 +39,63 @@ class SignIn extends Component {
             this.setState({
                 ...initialState
             });
-        } catch(err) {
+        } catch (error) {
+            const code = error.code;
+            const message = error.message;
+            console.log(code);
             // console.log(err);
         }
     }
 
     render() {
-const { email, password } = this.state;
+        const { email, password } = this.state;
 
-        return(
-            <div className="signin">
-                <div className="wrap">
-                    <h2>
-                        LogIn
-                    </h2>
-                    <div className="formWrap">
-                        <form onSubmit={this.handleSubmit}>
+        const configAuthWrapper = {
+            headline: 'Login'
+        }
 
-                            <FormInput 
-                                type="email"
-                                name="email"
-                                value={email}
-                                placeholder="Please enter your email"
-                                handleChange={this.handleChange}
-                            />
-                                       <FormInput 
-                                type="password"
-                                name="password"
-                                value={password}
-                                placeholder="Please enter your password"
-                                handleChange={this.handleChange}
-                            />
-                                      <Button type="submit">
-                                        Login
+        return (
+            <AuthWrapper {...configAuthWrapper}>
+
+                <div className="formWrap">
+                    <form onSubmit={this.handleSubmit}>
+
+                        <FormInput
+                            type="email"
+                            name="email"
+                            value={email}
+                            placeholder="Please enter your email"
+                            handleChange={this.handleChange}
+                        />
+                        <FormInput
+                            type="password"
+                            name="password"
+                            value={password}
+                            placeholder="Please enter your password"
+                            handleChange={this.handleChange}
+                        />
+                        <Button
+                            type="submit"
+                        >
+                            Login
                                     </Button>
-                            <div className="socialSignin">
-                                <div className="row">
-                                    <Button onClick={signInWithGoogle}>
-                                        Sign in with Google
-                                    </Button>
-                                </div>
+                        <div className="socialSignin">
+                            <div className="row">
+                                <Button onClick={signInWithGoogle}>
+                                    Sign in with Google
+                                </Button>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div className="links">
+                            <Link to="/recovery">
+                                Reset Password
+                            </Link>
+                        </div>
+
+                    </form>
                 </div>
-            </div>
+            </AuthWrapper>
         )
     }
 }

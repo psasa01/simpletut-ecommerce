@@ -38,6 +38,7 @@
 
             &:last-child {
                 margin-right: 0;
+                cursor: pointer;
             }
             
             a {
@@ -46,6 +47,7 @@
                 color: #000;
                 text-decoration: none;
                 text-transform: uppercase;
+          
             }
         }
     }

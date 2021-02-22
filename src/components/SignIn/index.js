@@ -1,40 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom'
+import { signInUser, signInWithGoogle, resetAllAuthforms } from './../../redux/User/user.actions'
+
 import './styles.scss';
 import Button from './../forms/Button';
-import { signInWithGoogle, auth } from './../../firebase/utils';
 
 import AuthWrapper from './../AuthWrapper';
 import FormInput from './../forms/FormInput'
 // import Button from './../forms/Button'
 
+const mapState = ({ user }) => ({
+        signInSuccess: user.signInSuccess
+});
 
 const SignIn = props => {
-
+    const { signInSuccess } = useSelector(mapState);
+    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        if (signInSuccess) {
+                resetForm();
+                dispatch(resetAllAuthforms());
+                props.history.push('/');
+    }
+    }, [signInSuccess])
 
     const resetForm = () => {
         setEmail('');
         setPassword('');
     }
 
-    const handleSubmit = async e => {
+    const handleSubmit = e => {
         e.preventDefault();
-      
-        try {
-            await auth.signInWithEmailAndPassword(email, password);
-            resetForm();
-            props.history.push('/');
-        } catch (error) {
-            const code = error.code;
-            const message = error.message;
-            console.log(code);
-            // console.log(err);
-        }
+        dispatch(signInUser({ email, password }));
     }
 
-
+    const handleGoogleSignin = () => {
+        dispatch(signInWithGoogle());
+    }
     
           const configAuthWrapper = {
             headline: 'Login'
@@ -67,7 +73,7 @@ const SignIn = props => {
                                     </Button>
                         <div className="socialSignin">
                             <div className="row">
-                                <Button onClick={signInWithGoogle}>
+                                <Button onClick={ handleGoogleSignin }>
                                     Sign in with Google
                                 </Button>
                             </div>
@@ -78,6 +84,7 @@ const SignIn = props => {
                                 Reset Password
                             </Link>
                         </div>
+                        
 
                     </form>
                 </div>
